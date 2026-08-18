@@ -52,8 +52,8 @@ const DRUGS = {
       gen: 'Norepinephrine',
       conc: null, concUnit: 'mcg',
       concDesc: '泡法多種，請輸入實際濃度',
-      rec: [0.01, 0.1], def: 0.05,
-      recNote: 'R1 上限 0.1，最多不超過 0.3 mcg/kg/min',
+      rec: [0.01, 0.3], def: 0.05,
+      alertOver: 0.1, alertMsg: '超過 0.1 需要問過麻醉醫師',
       recept: '強 α1、弱 β2 → 升 SVR、可能 reflex bradycardia、CO 持平',
       mixes: [
         { label: '10 mcg/ml', mcg: 10, how: 'Levophed 2.5 ml + D5W 247.5 ml（總量 250 ml）' },
@@ -205,7 +205,8 @@ function renderInfo() {
   if (!drug) { $('drugInfo').innerHTML = '<div class="nodrug">請先選擇藥物</div>'; return; }
   $('drugInfo').innerHTML =
     '<div class="bigdose">' + drug.rec[0] + ' – ' + drug.rec[1] + '</div>' +
-    '<div class="bigdose-unit">mcg/kg/min</div>';
+    '<div class="bigdose-unit">mcg/kg/min</div>' +
+    (drug.alertMsg ? '<div class="dosealert">⚠️ ' + esc(drug.alertMsg) + '</div>' : '');
 }
 
 /* ---------- 常見泡法 chips ---------- */
@@ -320,6 +321,7 @@ function calc() {
           fmt(loMl, 2) + ' – ' + fmt(hiMl, 2) + ' ml/hr';
   if (dose < drug.rec[0]) s += '<br>⚠️ 目前劑量低於建議範圍';
   if (dose > drug.rec[1]) s += '<br>⚠️ 目前劑量高於建議範圍，請再確認醫囑';
+  else if (drug.alertOver !== undefined && dose > drug.alertOver) s += '<br>⚠️ ' + drug.alertMsg;
   sub.innerHTML = s;
 
   renderFormula(wt, dose, c, mlhr);
@@ -398,6 +400,7 @@ function backCalc() {
           '<b>' + fmt(dose, 3) + ' mcg/kg/min</b>';
   if (dose < drug.rec[0]) h += '<br>⚠️ 低於 ' + drug.name + ' 建議範圍（' + drug.rec[0] + '–' + drug.rec[1] + '）';
   else if (dose > drug.rec[1]) h += '<br>⚠️ 高於 ' + drug.name + ' 建議範圍（' + drug.rec[0] + '–' + drug.rec[1] + '）';
+  else if (drug.alertOver !== undefined && dose > drug.alertOver) h += '<br>⚠️ ' + drug.alertMsg;
   out.innerHTML = h;
 }
 
