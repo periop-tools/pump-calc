@@ -4,7 +4,11 @@
    資料來源：科內筆記（藥物.md / Adrenergic agent.md / CVS刀.md）＋ 仿單劑量核對
    =========================================================== */
 
-/* ---------- 藥物資料 ---------- */
+/* ---------- 藥物資料 ----------
+   欄位說明：rec = 建議劑量範圍（畫面上唯一顯示的臨床資訊，大字）、def = 目標劑量預設值、
+   mixes = 常見泡法快捷鍵。
+   ⚠️ recNote / recept 目前「不顯示在畫面上」（2026-08-18 使用者要求精簡資訊卡），
+      保留在資料裡供日後想加回來時使用，改 renderInfo() 即可。 */
 const DRUGS = {
   nmb: [
     {
@@ -13,9 +17,7 @@ const DRUGS = {
       gen: 'Rocuronium',
       conc: 10, concUnit: 'mg',
       concDesc: '原汁（50 mg / 5 ml vial 直接抽）',
-      rec: [9, 12], def: 10, sMin: 5, sMax: 15, sStep: 0.5,
-      bolus: 'Induction 0.6–1.2 mg/kg（RSI 0.9–1.2）；追加 0.15 mg/kg',
-      note: '自呼／PS 模式可降到 6–9 mcg/kg/min。仿單：恢復 T2 後起始 10–12、維持 7–10 mcg/kg/min。'
+      rec: [9, 12], def: 10
     },
     {
       id: 'esmeron5',
@@ -23,9 +25,7 @@ const DRUGS = {
       gen: 'Rocuronium',
       conc: 5, concUnit: 'mg',
       concDesc: '對半稀釋（50 mg 加到 10 ml）',
-      rec: [9, 12], def: 10, sMin: 5, sMax: 15, sStep: 0.5,
-      bolus: 'Induction 0.6–1.2 mg/kg（RSI 0.9–1.2）；追加 0.15 mg/kg',
-      note: '濃度減半 → 同樣劑量下 ml/hr 會變成兩倍，接班時要特別確認藥袋濃度。'
+      rec: [9, 12], def: 10
     },
     {
       id: 'nimbex2',
@@ -33,9 +33,7 @@ const DRUGS = {
       gen: 'Cisatracurium',
       conc: 2, concUnit: 'mg',
       concDesc: '原汁（10 mg / 5 ml，抽原汁不稀釋）',
-      rec: [1, 3], def: 2, sMin: 0.5, sMax: 4, sStep: 0.1,
-      bolus: 'Induction 0.15 mg/kg；追加 0.02 mg/kg',
-      note: '仿單：起始 3 mcg/kg/min，之後 1–2 mcg/kg/min 多可維持。吸入麻醉（isoflurane 等）可再減 30–40%。'
+      rec: [1, 3], def: 2
     },
     {
       id: 'nimbex1',
@@ -43,9 +41,7 @@ const DRUGS = {
       gen: 'Cisatracurium',
       conc: 1, concUnit: 'mg',
       concDesc: '對半稀釋（10 mg 加到 10 ml）',
-      rec: [1, 3], def: 2, sMin: 0.5, sMax: 4, sStep: 0.1,
-      bolus: 'Induction 0.15 mg/kg；追加 0.02 mg/kg',
-      note: '濃度減半 → 同樣劑量下 ml/hr 會變成兩倍，接班時要特別確認藥袋濃度。'
+      rec: [1, 3], def: 2
     }
   ],
 
@@ -56,14 +52,15 @@ const DRUGS = {
       gen: 'Norepinephrine',
       conc: null, concUnit: 'mcg',
       concDesc: '泡法多種，請輸入實際濃度',
-      rec: [0.01, 0.1], def: 0.05, sMin: 0.01, sMax: 0.3, sStep: 0.01,
+      rec: [0.01, 0.1], def: 0.05,
       recNote: 'R1 上限 0.1，最多不超過 0.3 mcg/kg/min',
       recept: '強 α1、弱 β2 → 升 SVR、可能 reflex bradycardia、CO 持平',
       mixes: [
         { label: '10 mcg/ml', mcg: 10, how: 'Levophed 2.5 ml + D5W 247.5 ml（總量 250 ml）' },
         { label: '20 mcg/ml', mcg: 20, how: 'Levophed 1 ml + D5W 49 ml（總量 50 ml）' },
         { label: '50 mcg/ml', mcg: 50, how: 'Levophed 2 ml + D5W 38 ml（總量 40 ml）' },
-        { label: '64 mcg/ml', mcg: 64, how: 'Levophed 16 mg + D5W 234 ml（總量 250 ml，CVS LA set）' }
+        { label: '64 mcg/ml', mcg: 64, how: 'Levophed 16 mg + D5W 234 ml（總量 250 ml，CVS LA set）' },
+        { label: '96 mcg/ml', mcg: 96, how: 'Levophed 24 mg 稀釋至總量 250 ml' }
       ]
     },
     {
@@ -72,7 +69,7 @@ const DRUGS = {
       gen: 'Adrenaline',
       conc: null, concUnit: 'mcg',
       concDesc: '泡法多種，請輸入實際濃度',
-      rec: [0.01, 0.1], def: 0.05, sMin: 0.01, sMax: 0.3, sStep: 0.01,
+      rec: [0.01, 0.1], def: 0.05,
       recNote: 'CVS 常用 0.01–0.1；敗血性休克可到 0.05–2 mcg/kg/min（依醫囑）',
       recept: '低劑量 β 為主（↑CO、↑冠脈灌注壓），高劑量轉 α（血管收縮）',
       mixes: [
@@ -86,7 +83,7 @@ const DRUGS = {
       gen: 'Dopamine',
       conc: 3, concUnit: 'mg',
       concDesc: '科內現行泡法 3 mg/ml（可自行改）',
-      rec: [2, 10], def: 5, sMin: 1, sMax: 20, sStep: 0.5,
+      rec: [2, 10], def: 5,
       recNote: '速記「5 腎 / 10 心 / 15 血管」；>20 拉血壓無效反增心律不整',
       recept: '劑量依賴：低劑量 D1（腎血管舒張）→ 中劑量 β1（強心）→ 高劑量 α1（升 SVR）',
       mixes: [
@@ -100,7 +97,7 @@ const DRUGS = {
       gen: 'Dobutamine',
       conc: null, concUnit: 'mcg',
       concDesc: '請輸入實際濃度',
-      rec: [2, 20], def: 5, sMin: 1, sMax: 20, sStep: 0.5,
+      rec: [2, 20], def: 5,
       recNote: '純強心，不升 SVR；低血壓時需搭配升壓劑',
       recept: 'β1++（↑收縮力 → ↑CO）、β2+（↓SVR），↑冠脈血流、↓LV filling pressure',
       mixes: [
@@ -113,7 +110,7 @@ const DRUGS = {
       gen: 'Milrinone',
       conc: null, concUnit: 'mcg',
       concDesc: '請輸入實際濃度',
-      rec: [0.375, 0.75], def: 0.375, sMin: 0.125, sMax: 0.75, sStep: 0.025,
+      rec: [0.375, 0.75], def: 0.375,
       recNote: '通常不開高劑量；每日累積上限 1.13 mg/kg/day（約 0.78 mcg/kg/min）',
       recept: 'PDE3 抑制劑（inodilator）：強心兼降 SVR/PVR，RV 問題與 CPB weaning 常用',
       mixes: [
@@ -196,32 +193,19 @@ function selectDrug(id) {
     renderChips();
   }
 
-  // 劑量滑桿
-  const r = $('doseRange');
-  r.min = drug.sMin; r.max = drug.sMax; r.step = drug.sStep;
-  r.value = drug.def;
+  // 目標劑量：帶入預設值，之後由使用者手動 key（拉霸已依使用者要求移除）
   $('dose').value = drug.def;
-  $('rMin').textContent = drug.sMin + ' mcg/kg/min';
-  $('rMax').textContent = drug.sMax + ' mcg/kg/min';
 
   calc();
 }
 
-/* ---------- 藥物資訊卡 ---------- */
+/* ---------- 藥物資訊卡 ----------
+   使用者要求（2026-08-18）：只留建議劑量大字，bolus／備註／作用機轉／濃度全部拿掉。 */
 function renderInfo() {
-  if (!drug) { $('drugInfo').innerHTML = '<span style="color:var(--ink2)">請先選擇藥物</span>'; return; }
-  let h = '<table class="infotbl">';
-  h += '<tr><th>藥名</th><td><b>' + esc(drug.name) + '</b>（' + esc(drug.gen) + '）</td></tr>';
-  h += '<tr><th>濃度</th><td>' +
-       (drug.conc === null ? '依實際泡法輸入' : '<b>' + drug.conc + ' ' + drug.concUnit + '/ml</b>') +
-       '<br><span style="color:var(--ink2);font-size:12.5px">' + esc(drug.concDesc) + '</span></td></tr>';
-  h += '<tr><th>建議劑量</th><td class="dose">' + drug.rec[0] + ' – ' + drug.rec[1] + ' mcg/kg/min</td></tr>';
-  if (drug.recNote) h += '<tr><th></th><td style="font-size:12.5px;color:var(--ink2)">' + esc(drug.recNote) + '</td></tr>';
-  if (drug.bolus) h += '<tr><th>Bolus 劑量</th><td style="font-size:12.5px">' + esc(drug.bolus) + '</td></tr>';
-  if (drug.recept) h += '<tr><th>作用</th><td style="font-size:12.5px">' + esc(drug.recept) + '</td></tr>';
-  if (drug.note) h += '<tr><th>備註</th><td style="font-size:12.5px;color:var(--ink2)">' + esc(drug.note) + '</td></tr>';
-  h += '</table>';
-  $('drugInfo').innerHTML = h;
+  if (!drug) { $('drugInfo').innerHTML = '<div class="nodrug">請先選擇藥物</div>'; return; }
+  $('drugInfo').innerHTML =
+    '<div class="bigdose">' + drug.rec[0] + ' – ' + drug.rec[1] + '</div>' +
+    '<div class="bigdose-unit">mcg/kg/min</div>';
 }
 
 /* ---------- 常見泡法 chips ---------- */
@@ -442,13 +426,7 @@ document.querySelectorAll('#concSeg button').forEach(b => {
   });
 });
 
-$('doseRange').addEventListener('input', e => { $('dose').value = e.target.value; calc(); });
-$('dose').addEventListener('input', e => {
-  const v = parseFloat(e.target.value);
-  if (isFinite(v)) $('doseRange').value = v;
-  calc();
-});
-['wt', 'conc', 'mixMg', 'mixMl', 'backMl'].forEach(id => $(id).addEventListener('input', calc));
+['wt', 'dose', 'conc', 'mixMg', 'mixMl', 'backMl'].forEach(id => $(id).addEventListener('input', calc));
 $('concUnit').addEventListener('change', calc);
 
 /* ---------- 初始化 ---------- */
