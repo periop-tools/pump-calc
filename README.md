@@ -2,7 +2,7 @@
 
 麻醉常用 pump 藥物劑量換算工具（mcg/kg/min → ml/hr），為新進麻醉護理師教學設計：**除了給答案，也把算式一步一步列出來**。
 
-🔗 線上版：https://jenniferliang813-netizen.github.io/pump-calc/
+🔗 線上版：https://periop-tools.github.io/pump-calc/
 
 ## 功能
 
