@@ -162,11 +162,27 @@ function renderDrugs() {
   });
 }
 
+/* ---------- 清空所有濃度相關輸入 ----------
+   換藥／換頁籤時一定要呼叫。若只重設 concMode 而不清空泡法欄位，
+   使用者手動切回「用泡法換算」時會沿用上一支藥的 mg/ml，
+   而且數值合法不會跳警告 → 靜默算出錯誤劑量。 */
+function resetConcInputs() {
+  $('conc').value = '';
+  $('mixMg').value = '';
+  $('mixMl').value = '';
+  $('mixOut').textContent = '＝ 請輸入藥量與總體積';
+  $('backMl').value = '';
+  $('backOut').textContent = '輸入體重、濃度與 ml/hr 後顯示';
+  concMode = 'direct';
+  setConcMode();
+}
+
 /* ---------- 選藥 ---------- */
 function selectDrug(id) {
   drug = DRUGS[cat].find(d => d.id === id);
   renderDrugs();
   renderInfo();
+  resetConcInputs();
 
   // 濃度欄：肌鬆劑固定濃度 → 隱藏；升壓藥 → 顯示
   const cf = $('concField');
@@ -174,8 +190,6 @@ function selectDrug(id) {
     cf.classList.add('hidden');
   } else {
     cf.classList.remove('hidden');
-    concMode = 'direct';          // 換藥時回到「直接輸入濃度」，避免沿用上一支藥的泡法數字
-    setConcMode();
     $('concHint').textContent = '（' + drug.concDesc + '）';
     $('conc').value = drug.conc === null ? '' : drug.conc;
     $('concUnit').value = drug.concUnit;
@@ -410,8 +424,7 @@ document.querySelectorAll('.tab').forEach(t => {
     t.classList.add('on');
     cat = t.dataset.cat;
     drug = null;
-    concMode = 'direct';
-    setConcMode();
+    resetConcInputs();   // 體重刻意保留：同一台刀換藥時病人沒變
     $('concChips').innerHTML = '';
     $('chipTip').textContent = '';
     $('concField').classList.add('hidden');
