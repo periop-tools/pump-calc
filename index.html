@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pump 速算</title>
+<meta name="theme-color" content="#0d7c8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pump 速算">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{
+  --bg:#f2f5f7; --card:#ffffff; --ink:#12303a; --ink2:#5b7683;
+  --line:#dbe4e9; --brand:#0d7c8a; --brand-d:#0a5f6a; --brand-l:#e3f2f4;
+  --accent:#c2410c; --warn:#8a5a00; --warnbg:#fff7e6;
+  --shadow:0 1px 3px rgba(18,48,58,.08),0 6px 20px rgba(18,48,58,.06);
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1a1e; --card:#182a30; --ink:#e8f1f3; --ink2:#9db3bc;
+    --line:#27424a; --brand:#3aa8b6; --brand-d:#1d7c8a; --brand-l:#12333a;
+    --accent:#ff9270; --warn:#f0b45c; --warnbg:#33290f;
+    --shadow:0 1px 3px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-size:16px; line-height:1.6; padding-bottom:48px;
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+
+header{
+  background:linear-gradient(135deg,#0d7c8a,#0a5f6a);
+  color:#fff; padding:calc(env(safe-area-inset-top) + 18px) 14px 16px;
+}
+header .wrap{padding:0}
+header h1{margin:0;font-size:21px;letter-spacing:.5px}
+header p{margin:3px 0 0;font-size:13px;opacity:.85}
+
+.tabs{display:flex;gap:8px;margin:14px 0 16px}
+.tab{
+  flex:1;padding:12px 6px;border:none;border-radius:var(--r);
+  background:var(--card);color:var(--ink2);font-size:15px;font-weight:600;
+  box-shadow:var(--shadow);cursor:pointer;font-family:inherit;transition:.15s;
+}
+.tab.on{background:var(--brand);color:#fff}
+
+.card{
+  background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:16px;margin-bottom:14px;
+}
+.card h2{margin:0 0 12px;font-size:14px;color:var(--ink2);font-weight:700;letter-spacing:.6px}
+
+.drugs{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.drug{
+  text-align:left;padding:11px 12px;border:2px solid var(--line);border-radius:11px;
+  background:transparent;color:var(--ink);cursor:pointer;font-family:inherit;transition:.15s;
+}
+.drug:active{transform:scale(.98)}
+.drug.on{border-color:var(--brand);background:var(--brand-l)}
+.drug b{display:block;font-size:15px;line-height:1.3}
+.drug span{display:block;font-size:12px;color:var(--ink2);margin-top:2px}
+.drug em{display:block;font-size:11.5px;color:var(--brand);font-style:normal;font-weight:700;margin-top:3px}
+
+.infotbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.infotbl th{
+  text-align:left;width:88px;color:var(--ink2);font-weight:600;
+  padding:6px 8px 6px 0;vertical-align:top;white-space:nowrap;
+}
+.infotbl td{padding:6px 0;vertical-align:top}
+.infotbl .dose{color:var(--brand);font-weight:700}
+
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+label .hint{font-weight:400;opacity:.85}
+input[type=number],select{
+  width:100%;padding:13px 12px;font-size:17px;font-family:inherit;
+  border:2px solid var(--line);border-radius:11px;background:var(--bg);color:var(--ink);
+}
+input[type=number]:focus,select:focus{outline:none;border-color:var(--brand)}
+.row{display:flex;gap:8px;align-items:flex-end}
+.row>*{flex:1}
+.row .narrow{flex:0 0 110px}
+.unitline{font-size:13.5px;color:var(--brand);font-weight:700;margin-top:8px}
+
+.seg{display:flex;gap:6px;margin-bottom:9px}
+.seg button{
+  flex:1;padding:8px;font-size:12.5px;font-family:inherit;font-weight:600;
+  border:2px solid var(--line);border-radius:9px;background:transparent;color:var(--ink2);cursor:pointer;
+}
+.seg button.on{border-color:var(--brand);background:var(--brand-l);color:var(--brand)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{
+  padding:6px 10px;font-size:12px;font-family:inherit;border-radius:20px;
+  border:1px solid var(--line);background:transparent;color:var(--ink2);cursor:pointer;
+}
+.chip:active{background:var(--brand-l)}
+.chiptip{font-size:11.5px;color:var(--ink2);margin-top:8px;opacity:.9}
+
+input[type=range]{width:100%;accent-color:var(--brand);height:32px;margin-top:8px}
+.rangelbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink2);margin-top:-6px}
+
+.result{
+  background:linear-gradient(135deg,#0d7c8a,#0a5f6a);color:#fff;
+  border-radius:var(--r);padding:20px 16px;text-align:center;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.result .lbl{font-size:12.5px;opacity:.85;letter-spacing:1px}
+.result .big{font-size:46px;font-weight:800;line-height:1.15;margin:2px 0}
+.result .big small{font-size:19px;font-weight:600;opacity:.9;margin-left:4px}
+.result .sub{font-size:13px;opacity:.92;line-height:1.6}
+.result.err .big{font-size:19px;font-weight:600;padding:12px 0;line-height:1.5}
+
+.f-one{
+  font-family:"SF Mono",Consolas,"Roboto Mono",monospace;font-size:13.5px;line-height:2;
+  background:var(--bg);border-radius:10px;padding:12px;word-break:break-word;
+  border-left:4px solid var(--brand);
+}
+.f-one .hl{color:var(--accent);font-weight:700}
+details{margin-top:10px}
+summary{
+  cursor:pointer;font-size:13.5px;font-weight:700;color:var(--brand);
+  padding:9px 0;list-style:none;user-select:none;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"\25B8";display:inline-block;margin-right:6px;transition:.2s}
+details[open] summary::before{transform:rotate(90deg)}
+.steps{counter-reset:s;margin:4px 0 0;padding:0;list-style:none}
+.steps li{
+  counter-increment:s;position:relative;padding:10px 0 10px 34px;
+  border-bottom:1px dashed var(--line);font-size:14px;
+}
+.steps li:last-child{border-bottom:none}
+.steps li::before{
+  content:counter(s);position:absolute;left:0;top:12px;width:22px;height:22px;
+  border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.steps .calc{color:var(--accent);font-family:"SF Mono",Consolas,monospace;font-weight:700}
+.steps .why{display:block;font-size:12.5px;color:var(--ink2);margin-top:3px}
+
+.note{font-size:12.5px;color:var(--ink2);margin-top:12px;line-height:1.8;border-top:1px solid var(--line);padding-top:10px}
+.warnbox{
+  background:var(--warnbg);border-radius:10px;padding:12px 14px;font-size:12.5px;
+  color:var(--warn);line-height:1.8;margin-bottom:14px;
+}
+footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:4px 14px 0;line-height:1.9}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>💉 Pump 藥物速算</h1>
+    <p>麻醉常用 pump 劑量 → ml/hr｜附算式教學</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="tabs">
+    <button class="tab on" data-cat="nmb" type="button">肌肉鬆弛劑</button>
+    <button class="tab" data-cat="vaso" type="button">升壓 / 強心藥</button>
+  </div>
+
+  <div class="card">
+    <h2>① 選擇藥物與濃度</h2>
+    <div class="drugs" id="drugList"></div>
+  </div>
+
+  <div class="card">
+    <h2>② 這支藥的建議劑量</h2>
+    <div id="drugInfo"></div>
+  </div>
+
+  <div class="card">
+    <h2>③ 輸入條件</h2>
+
+    <div class="field">
+      <label for="wt">病人體重 <span class="hint">kg</span></label>
+      <input type="number" id="wt" inputmode="decimal" placeholder="例如 60" step="0.1" min="0">
+    </div>
+
+    <div class="field" id="concField">
+      <label>藥物濃度 <span class="hint" id="concHint"></span></label>
+      <div class="seg" id="concSeg">
+        <button type="button" class="on" data-mode="direct">直接輸入濃度</button>
+        <button type="button" data-mode="mix">用泡法換算</button>
+      </div>
+
+      <div id="modeDirect">
+        <div class="row">
+          <input type="number" id="conc" inputmode="decimal" placeholder="濃度數值" step="any" min="0">
+          <select id="concUnit" class="narrow">
+            <option value="mcg">mcg/ml</option>
+            <option value="mg">mg/ml</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="modeMix" class="hidden">
+        <div class="row">
+          <div>
+            <label for="mixMg" style="font-size:12px">藥量（mg）</label>
+            <input type="number" id="mixMg" inputmode="decimal" placeholder="例如 16" step="any" min="0">
+          </div>
+          <div>
+            <label for="mixMl" style="font-size:12px">總體積（ml）</label>
+            <input type="number" id="mixMl" inputmode="decimal" placeholder="例如 250" step="any" min="0">
+          </div>
+        </div>
+        <div class="unitline" id="mixOut">＝ 請輸入藥量與總體積</div>
+      </div>
+
+      <div class="chips" id="concChips"></div>
+      <div class="chiptip" id="chipTip"></div>
+    </div>
+
+    <div class="field">
+      <label for="dose">目標劑量 <span class="hint">mcg/kg/min</span></label>
+      <input type="number" id="dose" inputmode="decimal" step="any" min="0">
+      <input type="range" id="doseRange" step="0.01">
+      <div class="rangelbl"><span id="rMin"></span><span id="rMax"></span></div>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="lbl">PUMP 速率</div>
+    <div class="big" id="mlhr">—</div>
+    <div class="sub" id="resSub">請先輸入體重</div>
+  </div>
+
+  <div class="card">
+    <h2>④ 計算式</h2>
+    <div class="f-one" id="formulaOne">—</div>
+
+    <details id="detailBox">
+      <summary>看詳細算法（一步一步拆解）</summary>
+      <ol class="steps" id="steps"></ol>
+      <div class="note" id="genericNote"></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>⑤ 反算：pump 現在跑這個速率，等於多少劑量？</h2>
+    <div class="field">
+      <label for="backMl">目前 pump 速率 <span class="hint">ml/hr</span></label>
+      <input type="number" id="backMl" inputmode="decimal" placeholder="例如 5" step="any" min="0">
+    </div>
+    <div class="f-one" id="backOut">輸入體重、濃度與 ml/hr 後顯示</div>
+  </div>
+
+  <div class="warnbox">
+    ⚠️ 本工具僅供<b>教學與快速核對</b>，不取代醫囑與雙人核對。泡法與濃度各單位不同，用藥前務必看藥袋標示；劑量範圍為一般參考值，實際以主治醫師醫囑為準。
+  </div>
+
+  <footer>
+    秀傳麻醉科・麻訓班教材<br>
+    資料來源：科內筆記（藥物 / Adrenergic agent / CVS 配藥表）＋ 仿單劑量核對
+  </footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

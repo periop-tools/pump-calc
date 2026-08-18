@@ -1,0 +1,17 @@
+{
+  "name": "Pump 藥物速算",
+  "short_name": "Pump 速算",
+  "description": "麻醉常用 pump 藥物劑量換算（mcg/kg/min → ml/hr），附逐步算式教學。",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f5f7",
+  "theme_color": "#0d7c8a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
