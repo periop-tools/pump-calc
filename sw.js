@@ -1,7 +1,7 @@
 /* Pump 速算 service worker
    ⚠️ 改了 index.html / app.js / icons 之後，一定要把下面版本號 +1 再 push，
       否則使用者手機會被舊快取蓋住，看不到新版。 */
-const CACHE = 'pump-calc-v5';
+const CACHE = 'pump-calc-v6';
 
 const ASSETS = [
   './',

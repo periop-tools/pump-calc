@@ -170,7 +170,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:4px 14px 0;l
 
   <div class="tabs">
     <button class="tab on" data-cat="nmb" type="button">肌肉鬆弛劑</button>
-    <button class="tab" data-cat="vaso" type="button">升壓 / 強心藥</button>
+    <button class="tab" data-cat="vaso" type="button">升降壓 / 強心藥</button>
   </div>
 
   <div class="card">
@@ -187,7 +187,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:4px 14px 0;l
     <h2>③ 輸入條件</h2>
 
     <div class="field">
-      <label for="wt">病人體重 <span class="hint">kg</span></label>
+      <label for="wt">病人體重 <span class="hint" id="wtHint">kg</span></label>
       <input type="number" id="wt" inputmode="decimal" placeholder="例如 60" step="0.1" min="0">
     </div>
 
@@ -227,7 +227,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:4px 14px 0;l
     </div>
 
     <div class="field">
-      <label for="dose">目標劑量 <span class="hint">mcg/kg/min</span></label>
+      <label for="dose">目標劑量 <span class="hint" id="doseUnitLabel">mcg/kg/min</span></label>
       <input type="number" id="dose" inputmode="decimal" step="any" min="0">
     </div>
   </div>
@@ -265,7 +265,7 @@ footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:4px 14px 0;l
   <footer>
     秀傳麻醉科・麻訓班教材<br>
     資料來源：科內筆記（藥物 / Adrenergic agent / CVS 配藥表）＋ 仿單劑量核對<br>
-    <span style="opacity:.7">版本 v5・2026-08-18</span>
+    <span style="opacity:.7">版本 v6・2026-08-19</span>
   </footer>
 </div>
 
